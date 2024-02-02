@@ -1,6 +1,7 @@
 """Based on https://github.com/Seokju-Cho/Volumetric-Aggregation-Transformer/blob/main/data/pascal.py
 """
 import os
+import sys
 from PIL import Image
 import numpy as np
 import torch
@@ -57,10 +58,12 @@ class DatasetPASCAL(Dataset):
             return 1000
 
     def get_top50_images_for_validation(self):
-        print('feature name for val: ', self.feature_name[:-4] + '_val')
-        with open(f"./pascal-5i/VOC2012/{self.feature_name[:-4]}_val/folder{self.fold}_top_50-similarity.json") as f:
+        print('60, feature name for val: ', self.feature_name[:-4] + '_val')
+
+        with open(f"./river/{self.feature_name[:-4]}_val/folder{self.fold}_top_50-similarity.json") as f:
             images_top50 = json.load(f)
 
+        print(64, images_top50)
         images_top50_new = {}
         for img_name, img_class in self.img_metadata_val:
             if img_name not in images_top50_new:
@@ -312,7 +315,7 @@ class DatasetPASCAL(Dataset):
             # cwd = os.path.dirname(os.path.abspath(__file__))
             cwd = './evaluate'
 
-            fold_n_metadata_path = os.path.join(cwd, 'splits/pascal/%s/fold%d.txt' % (split, fold_id))
+            fold_n_metadata_path = os.path.join(cwd, 'splits/river/%s/fold%d.txt' % (split, fold_id))
 
             with open(fold_n_metadata_path, 'r') as f:
                 fold_n_metadata = f.read().split('\n')[:-1]
@@ -326,7 +329,7 @@ class DatasetPASCAL(Dataset):
                         # print('element: ',  element)
                         new_fold_n_metadata.append(element)
             else:
-                new_fold_n_metadata = [[data.split('__')[0], int(data.split('__')[1]) - 1] for data in fold_n_metadata]
+                new_fold_n_metadata = [[data.split('.jpg')[0], 1] for data in fold_n_metadata]
 
             return new_fold_n_metadata
 

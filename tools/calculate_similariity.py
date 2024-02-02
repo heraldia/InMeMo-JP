@@ -14,8 +14,8 @@ target_split = sys.argv[3]
 print(f"Processing {features_name} ...")
 sys.stdout.flush()
 
-source_features_dir = f"./pascal-5i/VOC2012/{features_name}_{source_split}"
-target_features_dir = f"./pascal-5i/VOC2012/{features_name}_{target_split}"
+source_features_dir = f"./river/{features_name}_{source_split}"
+target_features_dir = f"./river/{features_name}_{target_split}"
 
 trn_set = False
 
@@ -26,7 +26,7 @@ if source_split == 'trn' and target_split == 'trn':
 print(source_features_dir)
 print(target_features_dir)
 
-for foldid in [0, 1, 2, 3]:
+for foldid in [0]:
     feature_file = 'folder'+str(foldid)+'.npz'
     print(f"Processing {feature_file} ...")
     sys.stdout.flush()
@@ -72,7 +72,8 @@ for foldid in [0, 1, 2, 3]:
         # select top50 prompt pairs for each sample.
         if img_name not in similarity_idx_dict:
             if not trn_set:
-                similarity_idx_dict[img_name] = cur_similar_name[:50]
+                similarity_idx_dict[img_name] = cur_similar_name[
+                                                :50]
             else:
                 similarity_idx_dict[img_name] = cur_similar_name[1:51]  # to avoid the sample itself.
 

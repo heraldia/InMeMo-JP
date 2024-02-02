@@ -42,8 +42,8 @@ class DatasetPASCAL(Dataset):
         self.cls_base = cls_base
         self.selected_label = selected_label
 
-        self.img_path = os.path.join(datapath, 'VOC2012/JPEGImages/')
-        self.ann_path = os.path.join(datapath, 'VOC2012/SegmentationClassAug/')
+        self.img_path = os.path.join(datapath, 'JPEGImages/')
+        self.ann_path = os.path.join(datapath, 'SegmentationClassAug/')
         self.image_transform = image_transform
         self.reverse_support_and_query = reverse_support_and_query
         self.mask_transform = mask_transform
@@ -59,7 +59,6 @@ class DatasetPASCAL(Dataset):
         self.feature_name = feature_name
         self.seed = seed
         self.percentage = percentage
-        # self.images_top50_val = self.get_top50_images_val()
         self.images_top50_trn = self.get_top50_images_trn()
         self.images_top50_for_training = self.get_top50_images_for_training()
         self.mode = mode
@@ -69,9 +68,10 @@ class DatasetPASCAL(Dataset):
         return len(self.img_metadata_trn) if self.split == 'trn' else 1000
 
     def get_top50_images_for_training(self):
-        with open(f"./pascal-5i/VOC2012/{self.feature_name}/folder{self.fold}_top_50-similarity.json") as f:
+        with open(f"./river/{self.feature_name}/folder{self.fold}_top_50-similarity.json") as f:
             images_top50 = json.load(f)
 
+        print(74, images_top50)
         images_top50_new = {}
         for img_name, img_class in self.img_metadata_trn:
             if img_name not in images_top50_new:
@@ -336,7 +336,7 @@ class DatasetPASCAL(Dataset):
         def read_metadata(split, fold_id):
             cwd = 'evaluate'
 
-            fold_n_metadata_path = os.path.join(cwd, 'splits/pascal/%s/fold%d.txt' % (split, fold_id))
+            fold_n_metadata_path = os.path.join(cwd, 'splits/river/%s/fold%d.txt' % (split, fold_id))
 
             with open(fold_n_metadata_path, 'r') as f:
                 fold_n_metadata = f.read().split('\n')[:-1]
@@ -372,10 +372,11 @@ class DatasetPASCAL(Dataset):
             # cwd = os.path.dirname(os.path.abspath(__file__))
             cwd = 'evaluate'
 
+            # pascal to river
             if self.cluster:
-                fold_n_metadata_path = os.path.join(cwd, 'splits/pascal/%s/fold_cluster%d.txt' % (split, fold_id))
+                fold_n_metadata_path = os.path.join(cwd, 'splits/river/%s/fold_cluster%d.txt' % (split, fold_id))
             else:
-                fold_n_metadata_path = os.path.join(cwd, 'splits/pascal/%s/fold%d.txt' % (split, fold_id))
+                fold_n_metadata_path = os.path.join(cwd, 'splits/river/%s/fold%d.txt' % (split, fold_id))
 
             with open(fold_n_metadata_path, 'r') as f:
                 fold_n_metadata = f.read().split('\n')[:-1]
@@ -388,7 +389,12 @@ class DatasetPASCAL(Dataset):
                         element = [data.split('__')[0], label]
                         new_fold_n_metadata.append(element)
             else:
-                new_fold_n_metadata = [[data.split('__')[0], int(data.split('__')[1]) - 1] for data in fold_n_metadata]
+                for data in fold_n_metadata:
+                    print("392")
+                    print(data.split("__"))
+                
+                new_fold_n_metadata = [[data.split(".jpg")[0], 1] for data in fold_n_metadata]
+
 
             return new_fold_n_metadata
 
@@ -405,16 +411,17 @@ class DatasetPASCAL(Dataset):
             # cwd = os.path.dirname(os.path.abspath(__file__))
             cwd = 'evaluate'
 
+# pascal to river
             if self.cluster:
-                fold_n_metadata_path = os.path.join(cwd, 'splits/pascal/%s/fold_cluster%d.txt' % (split, fold_id))
+                fold_n_metadata_path = os.path.join(cwd, 'splits/river/%s/fold_cluster%d.txt' % (split, fold_id))
             else:
-                fold_n_metadata_path = os.path.join(cwd, 'splits/pascal/%s/fold%d.txt' % (split, fold_id))
+                fold_n_metadata_path = os.path.join(cwd, 'splits/river/%s/fold%d.txt' % (split, fold_id))
 
             with open(fold_n_metadata_path, 'r') as f:
                 fold_n_metadata = f.read().split('\n')[:-1]
             # import pdb;pdb.set_trace()
 
-            new_fold_n_metadata = [[data.split('__')[0], int(data.split('__')[1]) - 1] for data in fold_n_metadata]
+            new_fold_n_metadata = [[data.split('.jpg')[0], 1] for data in fold_n_metadata]
 
             return new_fold_n_metadata
 

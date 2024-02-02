@@ -31,7 +31,7 @@ def get_args():
     parser.add_argument('--t', default=[0, 0, 0], type=float, nargs='+')
     parser.add_argument('--task', default='segmentation', choices=['segmentation', 'detection'])
     parser.add_argument('--ckpt', default='./weights/checkpoint-1000.pth', help='model checkpoint')
-    parser.add_argument('--dataset_type', default='pascal')
+    parser.add_argument('--dataset_type', default='river')
     parser.add_argument('--fold', default=0, type=int)
     parser.add_argument('--split', default='trn', type=str)
     parser.add_argument('--purple', default=0, type=int)
@@ -91,8 +91,8 @@ def train(args):
                              feature_name=args.feature_name, percentage=args.percentage, seed=args.seed, mode=args.mode,
                              arr=args.arr, n_shot=args.n_shot)
     else:
-        train_dataset = {
-            'pascal': train_pascal_dataloader.DatasetPASCAL,
+        train_dataset = {  # doing
+            'river': train_pascal_dataloader.DatasetPASCAL,
         }[args.dataset_type](args.base_dir, fold=args.fold, split=args.split, image_transform=image_transform,
                              mask_transform=mask_transform,
                              flipped_order=args.flip, purple=args.purple, random=args.random, cluster=args.cluster,
@@ -101,7 +101,7 @@ def train(args):
 
 
     val_dataset = {
-        'pascal': val_pascal_dataloader.DatasetPASCAL,
+        'river': val_pascal_dataloader.DatasetPASCAL,
     }[args.dataset_type](args.base_dir, fold=args.fold, split=args.split, image_transform=image_transform,
                          mask_transform=mask_transform,
                          flipped_order=args.flip, purple=args.purple, random=args.random, cluster=args.cluster,
@@ -267,7 +267,7 @@ def train(args):
 
 
 if __name__ == '__main__':
-    mp.set_start_method('spawn')
+    #mp.set_start_method('spawn')
     args = get_args()
 
     args = args.parse_args()
