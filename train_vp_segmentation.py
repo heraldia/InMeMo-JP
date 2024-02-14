@@ -14,7 +14,8 @@ from torch.utils.data import DataLoader
 import torch.multiprocessing as mp
 from trainer.train_models import _generate_result_for_canvas, CustomVP, Scheduler
 from torch.cuda.amp import autocast, GradScaler
-
+# import multiprocessing
+# multiprocessing.set_start_method('spawn')
 
 def get_args():
     parser = argparse.ArgumentParser('InMeMo training for segmentation', add_help=False)
@@ -267,7 +268,7 @@ def train(args):
 
 
 if __name__ == '__main__':
-    #mp.set_start_method('spawn')
+    mp.set_start_method('spawn')
     args = get_args()
 
     args = args.parse_args()

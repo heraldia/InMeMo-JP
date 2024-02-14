@@ -10,6 +10,7 @@ import json
 import sys
 import random
 from evaluate.mae_utils import PURPLE, YELLOW
+from torchvision import transforms
 
 
 def create_grid_from_images_old(canvas, support_img, support_mask, query_img, query_mask):
@@ -97,6 +98,8 @@ class DatasetPASCAL(Dataset):
         canvas = torch.ones((support_img.shape[0], 2 * support_img.shape[1] + 2 * self.padding,
                              2 * support_img.shape[2] + 2 * self.padding))
 
+        # canvas = torch.ones((3, 2 * support_img.shape[1] + 2 * self.padding, 2 * support_img.shape[2] + 2 * self.padding)).cuda()
+
         content_list = [support_img, support_mask, query_img, query_mask]
 
         if arr == 'a1':
@@ -148,6 +151,14 @@ class DatasetPASCAL(Dataset):
             query_mask = content_list[3]
 
         canvas[:, :support_img.shape[1], :support_img.shape[2]] = support_img
+
+        # query_img = query_img.torchvision.transforms.Grayscale()
+
+        query_img = transforms.Compose([
+            transforms.Grayscale(num_output_channels=1),
+            # 可以在这里添加更多的转换操作
+        ])
+
         canvas[:, -query_img.shape[1]:, :query_img.shape[2]] = query_img
         canvas[:, :support_img.shape[1], -support_img.shape[2]:] = support_mask
         canvas[:, -query_img.shape[1]:, -support_img.shape[2]:] = query_mask
